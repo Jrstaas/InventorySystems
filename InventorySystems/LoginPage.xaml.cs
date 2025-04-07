@@ -10,7 +10,8 @@ namespace InventorySystems
         {
             { "jake", "staas" },
             { "ethan", "pedrick" },
-            { "devin", "white" }
+            { "devin", "white" },
+            { "nhat", "nguyen" }
             // Add more username-password pairs as needed
         };
 
