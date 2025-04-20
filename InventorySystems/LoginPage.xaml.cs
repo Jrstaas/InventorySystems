@@ -57,11 +57,13 @@ namespace InventorySystems
         }
 
         // Navigate to the page where users can select and delete their account
+        /*
         private async void OnRemoveUserClicked(object sender, EventArgs e)
         {
             string dbPath = FileSystem.AppDataDirectory + "/inventsys.db";
             // Navigate to the SelectUserPage where the user can select their account
             await Navigation.PushAsync(new SelectUserPage(dbPath));
         }
+        */
     }
 }
