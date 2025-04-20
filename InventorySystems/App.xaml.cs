@@ -1,4 +1,6 @@
 ﻿using Microsoft.Maui.Controls;
+using InventorySystems.Data;
+using System.Diagnostics;
 
 namespace InventorySystems
 {
@@ -7,13 +9,13 @@ namespace InventorySystems
         public App()
         {
             InitializeComponent();
-        }
 
-        // Override CreateWindow to set the root page
-        protected override Window CreateWindow(IActivationState activationState)
-        {
-            // Return a new Window with a NavigationPage wrapping the LoginPage
-            return new Window(new NavigationPage(new LoginPage()));
+            // Initialize the Query class with the database path
+            string dbPath = System.IO.Path.Combine("C:\\Users\\jrsta\\Downloads\\InventorySystems-master\\InventorySystems-master\\InventorySystems\\inventsys.db");
+            var query = new Query(dbPath);  // Use the correct path for the database file
+
+            // Use the query object to initialize the LoginPage without DatabaseContext
+            MainPage = new NavigationPage(new LoginPage(query));  // Pass query instead of databaseContext
         }
     }
 }

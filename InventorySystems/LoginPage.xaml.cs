@@ -1,48 +1,67 @@
 using Microsoft.Maui.Controls;
-using System.Collections.Generic;
+using InventorySystems.Data;
+using InventorySystems.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace InventorySystems
 {
     public partial class LoginPage : ContentPage
     {
-        // Define a dictionary with valid usernames and passwords
-        private Dictionary<string, string> validCredentials = new Dictionary<string, string>
-        {
-            { "jake", "staas" },
-            { "ethan", "pedrick" },
-            { "devin", "white" },
-            { "nhat", "nguyen" }
-            // Add more username-password pairs as needed
-        };
+        private readonly Query _query;
 
-        public LoginPage()
+        public LoginPage(Query query)
         {
-            InitializeComponent();
-        }
-
-        // Allows Enter to be Pushed
-        private void OnLoginEntryCompleted(object sender, EventArgs e)
-        {
-            // Trigger the login button click event when Enter is pressed
-            OnLoginClicked(sender, e);
-        }
-        private async void OnLoginClicked(object sender, EventArgs e)
-        {
-            // Get the entered username and password from the entry fields
-            string enteredUsername = usernameEntry.Text;
-            string enteredPassword = passwordEntry.Text;
-
-            // Check if the username exists in the dictionary and if the password matches
-            if (validCredentials.ContainsKey(enteredUsername) && validCredentials[enteredUsername] == enteredPassword)
+            try
             {
-                // If the credentials are valid, navigate to the MainPage
-                await Navigation.PushAsync(new MainPage(enteredUsername));
+                InitializeComponent();
+                string dbPath = System.IO.Path.Combine("C:\\Users\\jrsta\\Downloads\\InventorySystems-master\\InventorySystems-master\\InventorySystems\\inventsys.db");
+                _query = new Query(dbPath); // Initialize your Query class with the database path
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in LoginPage constructor: {ex.Message}");
+            }
+        }
+
+        // Login button clicked
+        private async void OnLoginButtonClicked(object sender, EventArgs e)
+        {
+            var username = Username.Text;
+            var password = PasswordHash.Text; // The entered password (no hashing)
+
+            // Call the ValidateUserLogin method in Query class
+            var user = await _query.ValidateUserLoginAsync(username, password);
+
+            if (user != null)
+            {
+                // Successful login, access user properties
+                var userId = user.UserID;
+                var usernameHash = user.Username;
+
+                // Proceed to the main page, passing user details
+                await Navigation.PushAsync(new MainPage(userId, usernameHash, _query));
             }
             else
             {
-                // If the credentials are invalid, show an error message
-                await DisplayAlert("Login Failed", "Invalid username or password. Please try again.", "OK");
+                // Failed login, show error message
+                await DisplayAlert("Error", "Invalid username or password", "OK");
             }
+        }
+
+        // Event handler for Entry Completed event (Trigger login on Enter)
+        private void OnLoginEntryCompleted(object sender, EventArgs e)
+        {
+            // Trigger OnLoginButtonClicked when Enter key is pressed
+            OnLoginButtonClicked(sender, e);
+        }
+
+        // Navigate to the page where users can select and delete their account
+        private async void OnRemoveUserClicked(object sender, EventArgs e)
+        {
+            string dbPath = FileSystem.AppDataDirectory + "/inventsys.db";
+            // Navigate to the SelectUserPage where the user can select their account
+            await Navigation.PushAsync(new SelectUserPage(dbPath));
         }
     }
 }
