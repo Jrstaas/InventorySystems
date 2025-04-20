@@ -37,15 +37,65 @@ namespace InventorySystems.Data
         {
             await _connection.UpdateAsync(product); // Async update
         }
-
-        public async Task DeleteProductInDatabaseAsync(int productID)
+        public async Task CreatePlaceholderProductAsync()
         {
-            var product = await _connection.Table<Product>().FirstOrDefaultAsync(p => p.ProductID == productID); // Async fetch
-            if (product != null)
+            var placeholderProduct = new Product
             {
-                await _connection.DeleteAsync(product); // Async delete
+                ProductName = "Deleted Product",
+                Description = "This product has been removed.",
+                UnitPrice = 0.0m,
+                StockQuantity = 0,
+                UserID = 99, // Assuming it's not assigned to any user
+                //SupplierID = null // Assuming it's not linked to any supplier
+            };
+
+            await _connection.InsertAsync(placeholderProduct);
+        }
+
+        public async Task ReplaceProductInOrdersAsync(int oldProductId)
+        {
+            // Retrieve the placeholder product
+            var placeholderProduct = await _connection.Table<Product>()
+                                                       .FirstOrDefaultAsync(p => p.ProductName == "Deleted Product");
+
+            if (placeholderProduct == null)
+            {
+                // If the placeholder doesn't exist, create it
+                await CreatePlaceholderProductAsync();
+                placeholderProduct = await _connection.Table<Product>()
+                                                       .FirstOrDefaultAsync(p => p.ProductName == "Deleted Product");
+            }
+
+            // Update orders to reference the placeholder product
+            var orders = await _connection.Table<Order>()
+                                           .Where(o => o.ProductID == oldProductId)
+                                           .ToListAsync();
+
+            foreach (var order in orders)
+            {
+                order.ProductID = placeholderProduct.ProductID;
+                await _connection.UpdateAsync(order);
             }
         }
+        public async Task DeleteProductAsync(int productId)
+        {
+            // Update orders to reference the placeholder product
+            await ReplaceProductInOrdersAsync(productId);
+
+            // Delete the original product
+            var product = await _connection.Table<Product>()
+                                            .FirstOrDefaultAsync(p => p.ProductID == productId);
+
+            if (product != null)
+            {
+                await _connection.DeleteAsync(product);
+            }
+        }
+
+
+
+
+
 
         public async Task<List<Product>> GetAllProductsAsync()
         {
@@ -57,7 +107,6 @@ namespace InventorySystems.Data
 
         public async Task InsertOrderAsync(Order order)
         {
-            order.OrderID = 1;
             order.CustomerID = 1;
             order.SupplierID = 1;
             await _connection.InsertAsync(order); // Async insert
@@ -137,6 +186,12 @@ namespace InventorySystems.Data
             var query = "INSERT OR REPLACE INTO Supplier (SupplierName, ContactName, ContactEmail, ContactPhone, Address) VALUES (?, ?, ?, ?, ?)";
             await _connection.ExecuteAsync(query, supplier.SupplierName, supplier.ContactName, supplier.ContactEmail, supplier.ContactPhone, supplier.Address);
         }
+        public async Task<Product> GetProductByUserIdAndProductIdAsync(int userId, int productId)
+        {
+            return await _connection.Table<Product>()
+                .FirstOrDefaultAsync(p => p.UserID == userId && p.ProductID == productId);
+        }
+
 
         public async Task<IEnumerable<Supplier>> GetSuppliersAsync()
         {
