@@ -15,7 +15,7 @@ namespace InventorySystems
             try
             {
                 InitializeComponent();
-                string dbPath = System.IO.Path.Combine("C:\\Users\\jrsta\\Downloads\\InventorySystems-master\\InventorySystems-master\\InventorySystems\\inventsys.db");
+                string dbPath = System.IO.Path.Combine(Environment.GetEnvironmentVariable("AppData"), "inventsys.db");
                 _query = new Query(dbPath); // Initialize your Query class with the database path
             }
             catch (Exception ex)

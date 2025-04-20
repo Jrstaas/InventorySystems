@@ -20,7 +20,7 @@ namespace InventorySystems
             InitializeComponent();
             _userId = userId;
             _username = username;
-            string dbPath = System.IO.Path.Combine("C:\\Users\\jrsta\\Downloads\\InventorySystems-master\\InventorySystems-master\\InventorySystems\\inventsys.db");
+            string dbPath = System.IO.Path.Combine(Environment.GetEnvironmentVariable("AppData"), "inventsys.db");
             _query = new Query(dbPath);
             LoadProducts();
         }

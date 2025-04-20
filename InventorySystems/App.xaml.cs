@@ -11,7 +11,7 @@ namespace InventorySystems
             InitializeComponent();
 
             // Initialize the Query class with the database path
-            string dbPath = System.IO.Path.Combine("C:\\Users\\jrsta\\Downloads\\InventorySystems-master\\InventorySystems-master\\InventorySystems\\inventsys.db");
+            string dbPath = System.IO.Path.Combine(Environment.GetEnvironmentVariable("AppData"), "inventsys.db");
             var query = new Query(dbPath);  // Use the correct path for the database file
 
             // Use the query object to initialize the LoginPage without DatabaseContext
