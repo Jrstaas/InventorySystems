@@ -9,7 +9,7 @@ namespace InventorySystems.Models
         [PrimaryKey, AutoIncrement]
 
         public int OrderID { get; set; }            // Unique identifier for the order
-        public DateTime OrderDate { get; set; }     // The date when the order was placed
+        public DateTime OrderDate { get; set; }     // This is in ticks since whenever .NET uses probably January 1st 2000, but I think that makes it kinda fun
         public int CustomerID { get; set; }         // Foreign key to the Customer table
         public int SupplierID { get; set; }         // Foreign key to the Supplier table
         public int ProductID { get; set; }          // Foreign key to the Product table
