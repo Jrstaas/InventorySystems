@@ -46,7 +46,7 @@
                 Margin="0,20" />
 
         <!-- Retro Footer -->
-        <Label Text="© 2025 Retro Inventory Systems"
+        <Label Text="© 2025 InventorySystems Inc"
                FontSize="12"
                TextColor="#bbbbbb"
                HorizontalTextAlignment="Center"

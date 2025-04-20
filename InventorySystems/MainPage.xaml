@@ -33,15 +33,15 @@
                    TextColor="#ffffff"
                    PlaceholderColor="#bbbbbb" />
 
-            <Entry x:Name="SupplierIdEntry"
+            <!--<Entry x:Name="SupplierIdEntry"
                    Placeholder="Enter Supplier ID"
                    Keyboard="Numeric"
                    BackgroundColor="#3c3c3c"
                    TextColor="#ffffff"
-                   PlaceholderColor="#bbbbbb" />
+                   PlaceholderColor="#bbbbbb" />-->
 
             <Entry x:Name="UnitPriceEntry"
-                   Placeholder="Enter unit price"
+                   Placeholder="Enter unit price (no $)"
                    Keyboard="Numeric"
                    BackgroundColor="#3c3c3c"
                    TextColor="#ffffff"
